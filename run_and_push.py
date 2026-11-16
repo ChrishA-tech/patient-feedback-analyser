@@ -20,8 +20,7 @@ ROOT = Path(__file__).resolve().parent
 VENV = ROOT / ".venv312"
 PY = VENV / "bin" / "python"
 OWNER, REPO = "ChrishA-tech", "patient-feedback-analyser"
-TRAILER = ("\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n"
-           "Claude-Session: https://claude.ai/code/session_01DVp71MJqKBK4sk34js4Jfb")
+TRAILER = ""
 SCISPACY_MODEL = "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.4/en_ner_bc5cdr_md-0.5.4.tar.gz"
 
 
