@@ -53,6 +53,15 @@ def test_ner_ruler_and_side_effect_odds(splits):
     top = risk.set_index("side_effect")
     assert top.loc["nausea", "odds_ratio_negative"] > 5 and top.loc["nausea", "share_of_positive"] < 0.01
     assert len(ner.entity_review_sample(te, e, n=10)) == 10
+    assert top.loc["nausea", "linked_to_negative"]
+
+
+def test_side_effect_that_is_the_condition_is_excluded():
+    import pandas as pd
+    df = pd.DataFrame({"label": [0, 1] * 40, "condition": ["Anxiety", "Anxiety"] * 20 + ["Pain", "Pain"] * 20})
+    ents = [[("SIDE_EFFECT", "anxiety", 0, 7)] for _ in range(80)]
+    risk = ner.side_effect_risk(df, ents, min_count=5).set_index("side_effect")
+    assert risk.loc["anxiety", "mentions"] == 40 and risk.loc["anxiety", "dropped_as_indication"] == 40
 
 
 def test_topics_nmf_fallback(splits):
@@ -65,7 +74,8 @@ def test_memo_renders(splits):
     _, lr = models.fit_tfidf(splits)
     r = {"data": splits["stats"], "models": {"tfidf_lr": lr, "keras": None}, "disagreement_share": 0.02,
          "side_effects": [{"side_effect": "nausea", "share_of_negative": 0.3, "share_of_positive": 0.01,
-                           "odds_ratio_negative": 30.0, "or_ci95": [10.0, 90.0]}],
+                           "odds_ratio_negative": 30.0, "or_ci95": [10.0, 90.0],
+                           "linked_to_negative": True}],
          "topics": {"method": "NMF", "topics": [{"keywords": ["weight", "gain"], "share": 0.4, "top_conditions": ["A"]}]}}
     text = memo.render(r)
     assert "nausea" in text and "Not** clinical" in text
@@ -115,11 +125,11 @@ def test_run_local_end_to_end_and_readme(raw_dir, tmp_path, monkeypatch):
     r = run_local.main(skip_keras=True, topic_method="nmf")
     assert (tmp_path / "results/memo.md").exists() and r["topics"]["method"].startswith("NMF")
     readme = tmp_path / "README.md"
-    readme.write_text("a\n<!-- RESULTS:START -->\nold\n<!-- RESULTS:END -->\nb")
+    readme.write_text("a\n<!-- RESULTS:START -->\nSTALE_PLACEHOLDER\n<!-- RESULTS:END -->\nb")
     monkeypatch.setattr(C, "ROOT", tmp_path)
     report.fill()
     txt = readme.read_text()
-    assert "TF-IDF" in txt and "Complaint themes" in txt and "old" not in txt
+    assert "TF-IDF" in txt and "Complaint themes" in txt and "STALE_PLACEHOLDER" not in txt
 
 
 def test_report_includes_aws_section(tmp_path, monkeypatch, splits):

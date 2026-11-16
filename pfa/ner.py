@@ -61,13 +61,26 @@ def extract(nlp, texts: List[str], batch_size: int = 256) -> List[List[tuple]]:
     return out
 
 
+def _is_indication(term: str, condition: str) -> bool:
+    """True when the 'side effect' is really the condition being treated (e.g. 'anxiety' in an Anxiety review)."""
+    stem = term.split()[0][:6]
+    return stem in str(condition).lower()
+
+
 def side_effect_risk(df: pd.DataFrame, ents: List[List[tuple]], top: int = 15, min_count: int = 30) -> pd.DataFrame:
-    """For each side effect: share of negative vs positive reviews mentioning it, and the odds ratio (95% CI)."""
+    """For each side effect: share of negative vs positive reviews mentioning it, and the odds ratio (95% CI).
+
+    Mentions that match the review's own condition are dropped (in an Anxiety review, 'anxiety' is the reason for
+    taking the drug, not a side effect). Without this, anxiety and depression look *protective*. Sorted by odds ratio;
+    `linked_to_negative` is True only when the whole 95% CI is above 1."""
     neg, pos = (df.label == 0).to_numpy(), (df.label == 1).to_numpy()
-    mention = Counter()
-    by = {}
+    cond = df.condition.tolist() if "condition" in df else [""] * len(df)
+    by, dropped = {}, Counter()
     for i, e in enumerate(ents):
         for se in {t for lab, t, *_ in e if lab in ("SIDE_EFFECT",)}:
+            if _is_indication(se, cond[i]):
+                dropped[se] += 1
+                continue
             by.setdefault(se, np.zeros(len(df), bool))[i] = True
     rows = []
     for se, m in by.items():
@@ -77,12 +90,15 @@ def side_effect_risk(df: pd.DataFrame, ents: List[List[tuple]], top: int = 15, m
             continue
         orr = ((a + .5) * (d + .5)) / ((b + .5) * (c + .5))
         se_log = math.sqrt(1 / (a + .5) + 1 / (b + .5) + 1 / (c + .5) + 1 / (d + .5))
+        lo, hi = math.exp(math.log(orr) - 1.96 * se_log), math.exp(math.log(orr) + 1.96 * se_log)
         rows.append({"side_effect": se, "mentions": a + c, "share_of_negative": round(a / max(neg.sum(), 1), 4),
                      "share_of_positive": round(c / max(pos.sum(), 1), 4), "odds_ratio_negative": round(orr, 2),
-                     "or_ci95": [round(math.exp(math.log(orr) - 1.96 * se_log), 2),
-                                 round(math.exp(math.log(orr) + 1.96 * se_log), 2)]})
+                     "or_ci95": [round(lo, 2), round(hi, 2)], "linked_to_negative": bool(lo > 1),
+                     "dropped_as_indication": int(dropped[se])})
     out = pd.DataFrame(rows)
-    return out.sort_values("mentions", ascending=False).head(top) if len(out) else out
+    if not len(out):
+        return out
+    return out.sort_values("mentions", ascending=False).head(top).sort_values("odds_ratio_negative", ascending=False)
 
 
 def entity_review_sample(df: pd.DataFrame, ents, n: int = 100, seed: int = 7) -> pd.DataFrame:

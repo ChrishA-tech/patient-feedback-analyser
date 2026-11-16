@@ -44,8 +44,10 @@ def render() -> str:
     se = r.get("side_effects", [])[:8]
     if se:
         L += ["", "| Side effect | In negative reviews | In positive reviews | Odds ratio (95% CI) |", "|---|---|---|---|"]
-        L += [f"| {s['side_effect']} | {s['share_of_negative']:.1%} | {s['share_of_positive']:.1%} | "
-              f"{s['odds_ratio_negative']} ({s['or_ci95'][0]}–{s['or_ci95'][1]}) |" for s in se]
+        note = ("_Odds ratio > 1: more common in negative reviews. Bold: whole 95% CI above 1. Mentions matching the "
+                "review's own condition (e.g. 'anxiety' in an Anxiety review) are excluded._")
+        L += [f"| {'**' + s['side_effect'] + '**' if s.get('linked_to_negative') else s['side_effect']} | {s['share_of_negative']:.1%} | {s['share_of_positive']:.1%} | "
+              f"{s['odds_ratio_negative']} ({s['or_ci95'][0]}–{s['or_ci95'][1]}) |" for s in se] + ["", note]
     t = r.get("topics", {})
     if t.get("topics"):
         L += ["", f"**Complaint themes** ({t['method']}, {t['documents']:,} negative reviews"

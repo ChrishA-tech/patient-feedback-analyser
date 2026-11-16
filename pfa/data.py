@@ -77,7 +77,7 @@ def build_splits(df: pd.DataFrame, seed: int = C.SEED) -> Dict:
     official train and test files. Test or unseen rows whose text appears in training are removed (leakage)."""
     rng = np.random.default_rng(seed)
     lab = df[df.label >= 0].copy()
-    counts = lab.condition[lab.condition != "Unknown"].value_counts()
+    counts = lab.condition[(lab.condition != "Unknown") & ~lab.condition.str.startswith("Not Listed")].value_counts()
     eligible = counts[(counts >= C.UNSEEN_MIN) & (counts <= C.UNSEEN_MAX)].index.to_numpy()
     unseen_conds = set(rng.choice(eligible, size=min(C.N_UNSEEN_CONDITIONS, len(eligible)), replace=False))
     is_unseen = lab.condition.isin(unseen_conds)

@@ -2,14 +2,14 @@
 
 
 def _pct(x):
-    return "n/a" if x is None else f"{x:.0%}"
+    return "n/a" if x is None else f"{x:.1%}" if x < 0.1 else f"{x:.0%}"
 
 
 def render(r: dict) -> str:
     st, lr = r["data"], r["models"]["tfidf_lr"]
     ker = r["models"].get("keras")
     best = max([m for m in (lr, ker) if m], key=lambda m: m["test"]["macro_f1"])
-    se = r.get("side_effects", [])[:5]
+    se = [x for x in r.get("side_effects", []) if x.get("linked_to_negative")][:5]
     topics = r.get("topics", {}).get("topics", [])[:5]
     lines = [
         "# Patient drug reviews: what drives negative experiences",
@@ -33,6 +33,8 @@ def render(r: dict) -> str:
         *[f"- **{s['side_effect']}**: in {_pct(s['share_of_negative'])} of negative vs {_pct(s['share_of_positive'])} of "
           f"positive reviews (odds ratio {s['odds_ratio_negative']}, 95% CI {s['or_ci95'][0]}–{s['or_ci95'][1]})"
           for s in se],
+        *([] if se else ["- None of the common side effects is significantly more frequent in negative reviews."]),
+        "- Mentions that are the condition being treated (e.g. 'anxiety' in an Anxiety review) are excluded.",
         "",
         "## Recommendations",
         "1. Route reviews the model flags as negative and that mention a side effect to the medicines-safety inbox first.",
