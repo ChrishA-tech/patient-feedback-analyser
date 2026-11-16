@@ -1,0 +1,564 @@
+{
+  "data": {
+    "reviews": 215063,
+    "labelled": 195878,
+    "neutral_excluded": 19185,
+    "drugs": 3671,
+    "conditions": 837,
+    "sizes": {
+      "train": 84419,
+      "valid": 9221,
+      "test": 13480,
+      "unseen": 9950
+    },
+    "positive_share_train": 0.728,
+    "unseen_conditions": [
+      "Alcohol Dependence",
+      "Allergic Rhinitis",
+      "Asthma",
+      "Bacterial Vaginitis",
+      "Bladder Infection",
+      "Bowel Preparation",
+      "Breast Cance",
+      "Chronic Pain",
+      "Cluster Headaches",
+      "Constipation, Drug Induced",
+      "Cough and Nasal Congestion",
+      "Diabetes, Type 2",
+      "GERD",
+      "Helicobacter Pylori Infection",
+      "Hyperhidrosis",
+      "Migraine Prevention",
+      "Pneumonia",
+      "Skin or Soft Tissue Infection",
+      "Ulcerative Colitis",
+      "Underactive Thyroid"
+    ],
+    "test_rows_removed_as_duplicates_of_training": 26819,
+    "unseen_rows_removed_as_duplicates_of_training": 113,
+    "duplicate_review_texts_in_full_dataset": 86591
+  },
+  "models": {
+    "tfidf_lr": {
+      "model": "TF-IDF (1-2 grams) + logistic regression",
+      "threshold": 0.42,
+      "train_seconds": 4.4,
+      "valid": {
+        "n": 9221,
+        "macro_f1": 0.8699,
+        "accuracy": 0.896,
+        "roc_auc": 0.948,
+        "negative_recall": 0.8055,
+        "macro_f1_ci95": [
+          0.8625,
+          0.8778
+        ]
+      },
+      "test": {
+        "n": 13480,
+        "macro_f1": 0.868,
+        "accuracy": 0.8944,
+        "roc_auc": 0.9471,
+        "negative_recall": 0.8197,
+        "macro_f1_ci95": [
+          0.8614,
+          0.8743
+        ]
+      },
+      "unseen": {
+        "n": 9950,
+        "macro_f1": 0.8412,
+        "accuracy": 0.8767,
+        "roc_auc": 0.9308,
+        "negative_recall": 0.7671,
+        "macro_f1_ci95": [
+          0.832,
+          0.8493
+        ]
+      },
+      "ms_per_review_cpu": 0.038
+    },
+    "keras": {
+      "model": "TensorFlow/Keras CNN (embedding + Conv1D)",
+      "threshold": 0.37,
+      "train_seconds": 85.7,
+      "tensorflow": "2.21.0",
+      "valid": {
+        "n": 9221,
+        "macro_f1": 0.8566,
+        "accuracy": 0.8855,
+        "roc_auc": 0.9384,
+        "negative_recall": 0.7849,
+        "macro_f1_ci95": [
+          0.8485,
+          0.8649
+        ]
+      },
+      "test": {
+        "n": 13480,
+        "macro_f1": 0.8486,
+        "accuracy": 0.8792,
+        "roc_auc": 0.9335,
+        "negative_recall": 0.7881,
+        "macro_f1_ci95": [
+          0.8417,
+          0.8553
+        ]
+      },
+      "unseen": {
+        "n": 9950,
+        "macro_f1": 0.8225,
+        "accuracy": 0.8641,
+        "roc_auc": 0.9153,
+        "negative_recall": 0.7216,
+        "macro_f1_ci95": [
+          0.8133,
+          0.8304
+        ]
+      }
+    }
+  },
+  "disagreement_share": 0.0065,
+  "ner": {
+    "model": "spacy.blank('en') + EntityRuler",
+    "reviews": 13480,
+    "entities_by_label": {
+      "SIDE_EFFECT": 18192,
+      "DRUG": 15550
+    },
+    "reviews_with_side_effect": 0.6028
+  },
+  "side_effects": [
+    {
+      "side_effect": "itching",
+      "mentions": 382,
+      "share_of_negative": 0.0586,
+      "share_of_positive": 0.017,
+      "odds_ratio_negative": 3.59,
+      "or_ci95": [
+        2.92,
+        4.41
+      ],
+      "linked_to_negative": true,
+      "dropped_as_indication": 2
+    },
+    {
+      "side_effect": "bleeding",
+      "mentions": 329,
+      "share_of_negative": 0.0376,
+      "share_of_positive": 0.0195,
+      "odds_ratio_negative": 1.97,
+      "or_ci95": [
+        1.58,
+        2.46
+      ],
+      "linked_to_negative": true,
+      "dropped_as_indication": 65
+    },
+    {
+      "side_effect": "dizziness",
+      "mentions": 535,
+      "share_of_negative": 0.0605,
+      "share_of_positive": 0.0319,
+      "odds_ratio_negative": 1.95,
+      "or_ci95": [
+        1.64,
+        2.33
+      ],
+      "linked_to_negative": true,
+      "dropped_as_indication": 0
+    },
+    {
+      "side_effect": "diarrhea",
+      "mentions": 336,
+      "share_of_negative": 0.0365,
+      "share_of_positive": 0.0206,
+      "odds_ratio_negative": 1.8,
+      "or_ci95": [
+        1.45,
+        2.25
+      ],
+      "linked_to_negative": true,
+      "dropped_as_indication": 18
+    },
+    {
+      "side_effect": "mood swings",
+      "mentions": 340,
+      "share_of_negative": 0.0362,
+      "share_of_positive": 0.0211,
+      "odds_ratio_negative": 1.75,
+      "or_ci95": [
+        1.4,
+        2.18
+      ],
+      "linked_to_negative": true,
+      "dropped_as_indication": 0
+    },
+    {
+      "side_effect": "acne",
+      "mentions": 298,
+      "share_of_negative": 0.0319,
+      "share_of_positive": 0.0185,
+      "odds_ratio_negative": 1.75,
+      "or_ci95": [
+        1.39,
+        2.22
+      ],
+      "linked_to_negative": true,
+      "dropped_as_indication": 423
+    },
+    {
+      "side_effect": "headache",
+      "mentions": 876,
+      "share_of_negative": 0.0912,
+      "share_of_positive": 0.0552,
+      "odds_ratio_negative": 1.72,
+      "or_ci95": [
+        1.49,
+        1.98
+      ],
+      "linked_to_negative": true,
+      "dropped_as_indication": 30
+    },
+    {
+      "side_effect": "fatigue",
+      "mentions": 800,
+      "share_of_negative": 0.0697,
+      "share_of_positive": 0.0555,
+      "odds_ratio_negative": 1.28,
+      "or_ci95": [
+        1.1,
+        1.49
+      ],
+      "linked_to_negative": true,
+      "dropped_as_indication": 4
+    },
+    {
+      "side_effect": "nausea",
+      "mentions": 664,
+      "share_of_negative": 0.0577,
+      "share_of_positive": 0.0461,
+      "odds_ratio_negative": 1.27,
+      "or_ci95": [
+        1.07,
+        1.5
+      ],
+      "linked_to_negative": true,
+      "dropped_as_indication": 52
+    },
+    {
+      "side_effect": "cramps",
+      "mentions": 720,
+      "share_of_negative": 0.0602,
+      "share_of_positive": 0.0509,
+      "odds_ratio_negative": 1.2,
+      "or_ci95": [
+        1.02,
+        1.41
+      ],
+      "linked_to_negative": true,
+      "dropped_as_indication": 2
+    },
+    {
+      "side_effect": "anxiety",
+      "mentions": 911,
+      "share_of_negative": 0.0656,
+      "share_of_positive": 0.0683,
+      "odds_ratio_negative": 0.96,
+      "or_ci95": [
+        0.82,
+        1.12
+      ],
+      "linked_to_negative": false,
+      "dropped_as_indication": 797
+    },
+    {
+      "side_effect": "weight gain",
+      "mentions": 528,
+      "share_of_negative": 0.0373,
+      "share_of_positive": 0.0399,
+      "odds_ratio_negative": 0.94,
+      "or_ci95": [
+        0.77,
+        1.14
+      ],
+      "linked_to_negative": false,
+      "dropped_as_indication": 8
+    },
+    {
+      "side_effect": "insomnia",
+      "mentions": 295,
+      "share_of_negative": 0.0204,
+      "share_of_positive": 0.0224,
+      "odds_ratio_negative": 0.91,
+      "or_ci95": [
+        0.7,
+        1.19
+      ],
+      "linked_to_negative": false,
+      "dropped_as_indication": 158
+    },
+    {
+      "side_effect": "depression",
+      "mentions": 694,
+      "share_of_negative": 0.0477,
+      "share_of_positive": 0.0529,
+      "odds_ratio_negative": 0.9,
+      "or_ci95": [
+        0.75,
+        1.07
+      ],
+      "linked_to_negative": false,
+      "dropped_as_indication": 432
+    },
+    {
+      "side_effect": "dry mouth",
+      "mentions": 334,
+      "share_of_negative": 0.0155,
+      "share_of_positive": 0.0282,
+      "odds_ratio_negative": 0.55,
+      "or_ci95": [
+        0.41,
+        0.73
+      ],
+      "linked_to_negative": false,
+      "dropped_as_indication": 0
+    }
+  ],
+  "topics": {
+    "method": "BERTopic (all-MiniLM-L6-v2, UMAP, HDBSCAN)",
+    "documents": 15000,
+    "outlier_share": 0.4267,
+    "topics": [
+      {
+        "topic": 0,
+        "keywords": [
+          "pill",
+          "birth",
+          "birth control",
+          "control",
+          "period",
+          "ve"
+        ],
+        "size": 1488,
+        "share": 0.173,
+        "top_conditions": [
+          "Birth Control",
+          "Acne",
+          "Abnormal Uterine Bleeding"
+        ],
+        "example": "As a birth control it worked fine however it caused me to break out in a itchy rash around my mouth and chin. The rash got bigger over a two month period while I was taking the pill, make up couldn't even disguise it and"
+      },
+      {
+        "topic": 1,
+        "keywords": [
+          "burning",
+          "itching",
+          "yeast",
+          "cream",
+          "yeast infection",
+          "infection"
+        ],
+        "size": 772,
+        "share": 0.0898,
+        "top_conditions": [
+          "Vaginal Yeast Infection",
+          "Birth Control",
+          "Human Papilloma Virus"
+        ],
+        "example": "Yeah, did this for seven days. Just got out of the hospital after a full body rash (including feet, hands a face, required them to put me on iv antibiotics for two days). Fun times"
+      },
+      {
+        "topic": 2,
+        "keywords": [
+          "pain",
+          "relief",
+          "muscle",
+          "pain relief",
+          "help",
+          "did"
+        ],
+        "size": 433,
+        "share": 0.0503,
+        "top_conditions": [
+          "Pain",
+          "Muscle Spasm",
+          "Back Pain"
+        ],
+        "example": "Naproxen helped to lessen the pain of herniated discs, but I experienced shortness of breath and was only able to get through 10 mins of cardio class. Before Naproxen I would complete 60 - 90 mins of cardio. I stopped th"
+      },
+      {
+        "topic": 3,
+        "keywords": [
+          "anxiety",
+          "drug",
+          "medication",
+          "panic",
+          "attacks",
+          "depression"
+        ],
+        "size": 424,
+        "share": 0.0493,
+        "top_conditions": [
+          "Anxiety",
+          "Depression",
+          "Bipolar Disorde"
+        ],
+        "example": "While some give high ratings, I cannot. Within a week of starting it, it gave me what seemed like full-day long panic attacks and I wept for hours. I would later find out it was akathisia which wreaked havoc on my anxiet"
+      },
+      {
+        "topic": 4,
+        "keywords": [
+          "skin",
+          "acne",
+          "face",
+          "using",
+          "red",
+          "dermatologist"
+        ],
+        "size": 396,
+        "share": 0.046,
+        "top_conditions": [
+          "Acne",
+          "Rosacea",
+          "Birth Control"
+        ],
+        "example": "I'm on doxycycline currently I've been on it for 2 months now I was prescribed for 5 months, really hasn't been working... the moment I feel like my skin is clearing it takes a turn for the worst, it's crazy... if it was"
+      },
+      {
+        "topic": 5,
+        "keywords": [
+          "shot",
+          "depo",
+          "bleeding",
+          "depo shot",
+          "period",
+          "got"
+        ],
+        "size": 361,
+        "share": 0.042,
+        "top_conditions": [
+          "Abnormal Uterine Bleeding",
+          "Birth Control",
+          "Endometriosis"
+        ],
+        "example": "DO NOT GET THIS INJECTION. After the injection I was bleeding constantly for 4 months afterwards, I could not even have sex because it was like I was on my period every single day. After the 4 months of bleeding it final"
+      },
+      {
+        "topic": 6,
+        "keywords": [
+          "pressure",
+          "blood pressure",
+          "blood",
+          "bp",
+          "heart",
+          "medicine"
+        ],
+        "size": 345,
+        "share": 0.0401,
+        "top_conditions": [
+          "High Blood Pressure",
+          "Depression",
+          "Urinary Tract Infection"
+        ],
+        "example": "After using Diovan for only a few days I developed shortness of breath and my blood pressure skyrocketed. I was also very lethargic. Within 2 days of stopping going back to my old blood pressure medication my pressure dr"
+      },
+      {
+        "topic": 7,
+        "keywords": [
+          "nexplanon",
+          "bleeding",
+          "period",
+          "months",
+          "got",
+          "removed"
+        ],
+        "size": 324,
+        "share": 0.0377,
+        "top_conditions": [
+          "Birth Control",
+          "Unknown",
+          "Endometriosis"
+        ],
+        "example": "Okay, so I have been on the Nexplanon for almost fourteen months, and let me tell you, it has been THE WORST almost fourteen months of my life. Not only have I had extreme bleeding issues the WHOLE TIME, but I have also "
+      },
+      {
+        "topic": 8,
+        "keywords": [
+          "mirena",
+          "bleeding",
+          "removed",
+          "insertion",
+          "inserted",
+          "months"
+        ],
+        "size": 227,
+        "share": 0.0264,
+        "top_conditions": [
+          "Birth Control",
+          "Abnormal Uterine Bleeding",
+          "Unknown"
+        ],
+        "example": "My body reacted to implanon I have a face full of pus pimples. Took it out and Dr. Adviced to use mirena as it has lowest dosage of hormonal influences. 6 months later Inserted the mirena, I cramped for 1 day.. and start"
+      },
+      {
+        "topic": 9,
+        "keywords": [
+          "diarrhea",
+          "constipation",
+          "bowel",
+          "stomach",
+          "bm",
+          "pain"
+        ],
+        "size": 224,
+        "share": 0.026,
+        "top_conditions": [
+          "Constipation",
+          "Irritable Bowel Syndrome",
+          "Constipation, Chronic"
+        ],
+        "example": "I normally take Milk of Magnesia and have never had issues with it. It clears out my system well with no issues. I decided to try ducolax because it is supposed to be gentle. Gentle as a bad stomach flu. I took 3 tablets"
+      },
+      {
+        "topic": 10,
+        "keywords": [
+          "antibiotic",
+          "uti",
+          "infection",
+          "day",
+          "sinus",
+          "antibiotics"
+        ],
+        "size": 213,
+        "share": 0.0248,
+        "top_conditions": [
+          "Urinary Tract Infection",
+          "Sinusitis",
+          "Bacterial Infection"
+        ],
+        "example": "Doctor put me on this medicine for first time for a sinus infection. First day seem better. Second day all symptoms returned painful headache fever and chills. On seventh day went back to doctors, told her medicine wasn'"
+      },
+      {
+        "topic": 11,
+        "keywords": [
+          "work",
+          "improvement",
+          "did",
+          "does",
+          "did work",
+          "waste"
+        ],
+        "size": 205,
+        "share": 0.0238,
+        "top_conditions": [
+          "Erectile Dysfunction",
+          "Insomnia",
+          "Pain"
+        ],
+        "example": "Save your money. Doesn't work"
+      }
+    ]
+  },
+  "minutes": 4.2
+}
