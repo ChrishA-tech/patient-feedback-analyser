@@ -137,3 +137,16 @@ def test_report_includes_aws_section(tmp_path, monkeypatch, splits):
         "monitor_metrics": {"accuracy": 0.86, "f1": 0.88}, "violations": [{"metric": "f1"}], "cleaned_up_at": "x"}))
     txt = report.render()
     assert "patient-feedback-sentiment/1" in txt and "Approved" in txt and "violations: f1" in txt
+
+
+def test_download_uses_local_zip(raw_dir, tmp_path, monkeypatch):
+    import io, zipfile
+    from pfa import config as C, data as D
+    inner = io.BytesIO()
+    with zipfile.ZipFile(inner, "w") as z:
+        for n in ("drugsComTrain_raw.tsv", "drugsComTest_raw.tsv"):
+            z.write(raw_dir / n, n)
+    with zipfile.ZipFile(tmp_path / "drug+reviews.zip", "w") as z:     # nested zip, as UCI ships it
+        z.writestr("drugsCom_raw.zip", inner.getvalue())
+    monkeypatch.setattr(C, "UCI_URLS", [])
+    assert (D.download(tmp_path) / "drugsComTest_raw.tsv").exists()

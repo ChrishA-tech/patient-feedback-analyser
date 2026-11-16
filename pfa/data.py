@@ -15,16 +15,35 @@ import pandas as pd
 from . import config as C
 
 
+def _extract(raw: bytes, out: Path) -> bool:
+    """Unzip the TSVs (handles a zip nested inside the zip, as on some UCI mirrors)."""
+    with zipfile.ZipFile(io.BytesIO(raw)) as z:
+        for n in z.namelist():
+            if n.endswith(".tsv"):
+                (out / Path(n).name).write_bytes(z.read(n))
+            elif n.endswith(".zip"):
+                _extract(z.read(n), out)
+    return (out / "drugsComTrain_raw.tsv").exists()
+
+
 def download(out: Path = None) -> Path:
     out = out or C.DATA
     out.mkdir(parents=True, exist_ok=True)
-    if not (out / "drugsComTrain_raw.tsv").exists():
-        raw = urllib.request.urlopen(C.UCI_URL, timeout=300).read()
-        with zipfile.ZipFile(io.BytesIO(raw)) as z:
-            for n in z.namelist():
-                if n.endswith(".tsv"):
-                    (out / Path(n).name).write_bytes(z.read(n))
-    return out
+    if (out / "drugsComTrain_raw.tsv").exists():
+        return out
+    for z in sorted(out.glob("*.zip")) + sorted(Path.home().joinpath("Downloads").glob("drug*.zip")):
+        if _extract(z.read_bytes(), out):          # a zip downloaded by hand
+            return out
+    for url in C.UCI_URLS:
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            if _extract(urllib.request.urlopen(req, timeout=300).read(), out):
+                print("downloaded", url)
+                return out
+        except Exception as e:
+            print("failed", url, str(e)[:80])
+    raise SystemExit(f"Could not download the dataset. Open {C.UCI_PAGE}, click Download, and put the zip in "
+                     f"{out} (or leave it in ~/Downloads), then run again.")
 
 
 def clean_text(t: str) -> str:

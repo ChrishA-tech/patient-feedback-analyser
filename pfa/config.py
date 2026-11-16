@@ -3,7 +3,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 RESULTS = ROOT / "results"
-UCI_URL = "https://archive.ics.uci.edu/static/public/462/drug+review+dataset+drugs+com.zip"
+UCI_URLS = [  # UCI has moved files over the years: try each, newest first
+    "https://archive.ics.uci.edu/static/public/462/drug+reviews+drugs+com.zip",
+    "https://archive.ics.uci.edu/static/public/462/drug+review+dataset+drugs+com.zip",
+    "https://archive.ics.uci.edu/ml/machine-learning-databases/00462/drugsCom_raw.zip",
+]
+UCI_PAGE = "https://archive.ics.uci.edu/dataset/462/drug+review+dataset+drugs+com"
 SEED = 7
 
 # Sentiment labels from the 10-star rating: >= 7 positive, <= 4 negative, 5-6 left out as ambiguous.
