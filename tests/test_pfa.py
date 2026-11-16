@@ -97,7 +97,7 @@ def test_sagemaker_inference_contract(tmp_path, splits):
 
 def test_ground_truth_format():
     from datetime import datetime
-    from aws.run_sagemaker import gt_key, gt_record
+    from aws.gt import gt_key, gt_record
     r = gt_record("abc", 1)
     assert r == {"groundTruthData": {"data": "1", "encoding": "CSV"}, "eventMetadata": {"eventId": "abc"},
                  "eventVersion": "0"}

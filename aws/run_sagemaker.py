@@ -25,6 +25,7 @@ from botocore.exceptions import ClientError  # noqa: E402
 
 from pfa import config as C  # noqa: E402
 from pfa import data  # noqa: E402
+from aws.gt import gt_key, gt_record  # noqa: E402
 
 REGION = os.environ.get("AWS_REGION", "eu-west-2")
 PREFIX = "patient-feedback"
@@ -53,16 +54,6 @@ def save(**kw):
     C.RESULTS.mkdir(exist_ok=True)
     STATE.write_text(json.dumps(s, indent=2, default=str))
     return s
-
-
-def gt_record(inference_id: str, label: int) -> dict:
-    """Model Monitor ground-truth format (one JSON line per inference, matched on InferenceId)."""
-    return {"groundTruthData": {"data": str(int(label)), "encoding": "CSV"},
-            "eventMetadata": {"eventId": inference_id}, "eventVersion": "0"}
-
-
-def gt_key(prefix: str, now: datetime) -> str:
-    return f"{prefix}/{now:%Y/%m/%d/%H}/ground_truth.jsonl"
 
 
 def role_arn(iam):

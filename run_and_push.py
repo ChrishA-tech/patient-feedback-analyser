@@ -46,7 +46,10 @@ def setup(aws=False):
         # optional extras: the code falls back (and says so in the results) if they will not install
         if sh([u, "pip", "install", "--python", PY, "-r", "requirements-topics.txt"], check=False):
             print("BERTopic did not install: topics will use the NMF fallback")
-        if sh([u, "pip", "install", "--python", PY, "scispacy==0.5.5", SCISPACY_MODEL], check=False):
+        # --no-deps: scispaCy 0.5.x pins spaCy 3.7, which is built for NumPy 1 and breaks with NumPy 2. The NER model
+        # only needs scispaCy's tokenizer, so install it without letting it downgrade spaCy.
+        if sh([u, "pip", "install", "--python", PY, "--no-deps", "scispacy==0.5.5", "pysbd", "conllu", SCISPACY_MODEL],
+              check=False):
             print("scispaCy did not install: entities will use the EntityRuler only")
 
 
