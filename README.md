@@ -1,8 +1,9 @@
 # patient-feedback-analyser
 
+> **Status:** the local results below are measured. The SageMaker run (training job, registry gate, endpoint, Model Monitor) is written but has not run in AWS yet: it is waiting on an AWS service-quota increase, so no SageMaker results are reported.
+
 What do patients complain about, and can a model flag negative feedback reliably enough to route it? This project
-analyses **215,063 public patient drug reviews** (Drugs.com, UCI Machine Learning Repository, CC BY 4.0) and deploys
-the sentiment model on **AWS SageMaker** with a training job, **Model Registry** approval gate, a real-time endpoint
+analyses **215,063 public patient drug reviews** (Drugs.com, UCI Machine Learning Repository, CC BY 4.0) and includes a pipeline to deploy the sentiment model on **AWS SageMaker** with a training job, **Model Registry** approval gate, a real-time endpoint
 with data capture, and **Model Monitor** checking model quality on conditions the model never saw.
 
 ```mermaid
@@ -26,7 +27,7 @@ flowchart LR
 | Named entity extraction with spaCy (EntityRuler; scispaCy biomedical NER when installed) | `pfa/ner.py` |
 | Topic modelling of complaints with BERTopic (NMF fallback, always labelled) | `pfa/topics.py` |
 | Customer-feedback insight: side effects linked to bad experiences, with odds ratios and CIs | `pfa/ner.py`, `results/memo.md` |
-| MLOps on AWS: SageMaker training job, Model Registry with approval gate, endpoint with data capture, Model Monitor (model quality), automatic clean-up | `aws/` |
+| MLOps on AWS (pipeline written, run pending): SageMaker training job, Model Registry with approval gate, endpoint with data capture, Model Monitor (model quality), automatic clean-up | `aws/` |
 | Data hygiene: duplicate-text leakage between the official train and test files removed | `pfa/data.py` |
 
 ## Results
